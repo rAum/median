@@ -27,3 +27,15 @@
 *.exe
 *.out
 *.app
+
+# Other
+*.db
+*.opendb
+*.user
+*.vs
+*.suo
+Medians/Debug
+Medians/Release
+Medians/packages
+Testing/Debug
+Testing/Release
