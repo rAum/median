@@ -77,6 +77,24 @@ struct MedianTest : public ::testing::TestWithParam<size_t>
 		ASSERT_EQ(sut_medina, ref_median);
 	}
 
+	template<class InputGenerator, class MedianImplementation>
+	static void perform_online_test(size_t size, InputGenerator generate_input, MedianImplementation mediana)
+	{
+		vec<int> sut_input = generate_input(size);
+		std::vector<int> ref_input(sut_input.begin(), sut_input.end());
+
+		double ref_median = reference_median_implementation(ref_input);
+		// simulate seeing some values, then calling mediana function:
+		for (auto value : ref_input)
+			mediana.push(value);
+		double sut_medina = mediana.median();
+
+		ASSERT_EQ(IsNaN(sut_medina), IsNaN(ref_median));
+		if (IsNaN(ref_median) || IsNaN(sut_medina)) return;
+
+		ASSERT_EQ(sut_medina, ref_median);
+	}
+
 	static double IsNaN(double d) { return d != d; }
 };
 
@@ -94,23 +112,29 @@ struct MedianTesting : public ::testing::TestWithParam<size_t>
 
 };
 
-TEST_P(MedianTesting, SortedInput)
-{
-	const size_t test_size = GetParam();
-	MedianTest::perform_test(test_size, MedianTest::sorted_input, median<int>::of_sorted_set);
-}
-
-TEST_P(MedianTesting, DescSortedInput)
-{
-	const size_t test_size = GetParam();
-	MedianTest::perform_test(test_size, MedianTest::desc_sorted_input, median<int>::of_sorted_set);
-}
+//TEST_P(MedianTesting, SortedInput)
+//{
+//	const size_t test_size = GetParam();
+//	MedianTest::perform_test(test_size, MedianTest::sorted_input, median<int>::of_sorted_set);
+//}
+//
+//TEST_P(MedianTesting, DescSortedInput)
+//{
+//	const size_t test_size = GetParam();
+//	MedianTest::perform_test(test_size, MedianTest::desc_sorted_input, median<int>::of_sorted_set);
+//}
 
 /*TEST_P(MedianTesting, RandomInput)
 {
 	const size_t test_size = GetParam();
 	MedianTest::perform_test(test_size, MedianTest::random_input, median<int>::of_sorted_set);
 }*/
+
+TEST_P(MedianTesting, TestHeapMediana)
+{
+	const size_t test_size = GetParam();
+	MedianTest::perform_online_test(test_size, MedianTest::random_input, heap_median<int>());
+}
 
 const size_t sizes[] = { 0, 1, 2, 3, 4, 10, 13 };
 INSTANTIATE_TEST_CASE_P(ForDifferentInputSizes, MedianTesting, ::testing::ValuesIn(sizes));

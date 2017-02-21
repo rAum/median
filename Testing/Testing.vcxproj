@@ -156,6 +156,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="algorithm_test.cpp" />
+    <ClCompile Include="heap_test.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="median_test.cpp" />
     <ClCompile Include="vec_test.cpp" />

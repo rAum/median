@@ -35,6 +35,11 @@ public:
 		size_ = new_size;
 	}
 
+	void pop_back()
+	{
+		--size_;
+	}
+
 	size_t size()     const { return size_; }
 	size_t capacity() const { return capacity_; }
 

@@ -150,6 +150,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="algorithm.hpp" />
+    <ClInclude Include="heap.hpp" />
     <ClInclude Include="median.hpp" />
     <ClInclude Include="vec.hpp" />
   </ItemGroup>
