@@ -1,15 +1,5 @@
 #pragma once
 
-#include <iostream>
-
-template<class It>
-void print(It a, It b)
-{
-	for (It i = a; i != b; ++i)
-		std::cout << *i << ", ";
-	std::cout << std::endl;
-}
-
 namespace algorithm
 {
 	bool is_odd(int value);
@@ -46,26 +36,22 @@ namespace algorithm
 		using ValueType = decltype(*first);
 		const auto target_pos = first + pos;
 		
-		if (target_pos >= last) return;
+		if (target_pos >= last) throw std::out_of_range("Invalid position");
 
-		std::swap(*first, *target_pos); // choose pivot to be target_pos value.
-		
+		std::swap(*(last - 1), *target_pos); // choose pivot to be target_pos value.
 		while (first < last)
 		{
-			print(first, last);
-			// find place for pivot
-			const ValueType& p = *first;
-			auto pivot = std::partition(first, last, [&p](const ValueType& val) -> bool { return val < p; });
-			std::swap(*first, *pivot); // put pivot on right place
-			print(first, last);
-		
+			const ValueType& p = *(last - 1);
+			auto pivot = std::partition(first, last - 1, [&p](const ValueType& val) -> bool { return val < p; });			
+			std::swap(*pivot, *(last - 1));
+
 			if (pivot < target_pos) // pivot is on the left of required position..
 			{
 				first = pivot + 1; // so we need go right, leaving pivot in right place
 			}
 			else if (pivot > target_pos)
 			{
-				last = pivot - 1; // overshooting, need to go left
+				last = pivot; // overshooting, need to go left
 			}
 			else // pivot == target_pos!
 			{

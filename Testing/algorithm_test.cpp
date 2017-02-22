@@ -22,14 +22,17 @@ TEST(Algorithm, PartitionWorks)
 
 TEST(Algorithm, QuickSelectWorks)
 {
-	std::vector<int> input{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-	const size_t k = 3;
-	const auto expected_value = input[k];
-	std::random_shuffle(input.begin(), input.end());
+	for (size_t k = 0; k < 9; ++k)
+	{
+		std::vector<int> input{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+		const auto expected_value = input[k];
 
-	algorithm::quick_select_kth(input.begin(), input.end(), k);
+		std::random_shuffle(input.begin(), input.end());
 
-	EXPECT_EQ(input[k], expected_value);
+		algorithm::quick_select_kth(input.begin(), input.end(), k);
+
+		ASSERT_EQ(input[k], expected_value);
+	}
 }
 
 TEST(Algorithm, QuickSelectWorksWhenThereAreDuplicates)
