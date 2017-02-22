@@ -1,27 +1,21 @@
 #include <iostream>
 #include <memory>
 
-#include "vec.hpp"
+#include "median.hpp"
 
 using std::cout;
 using std::cin;
 
 int main(int argc, char**argv)
 {
-	cout << "Trying to find median.\n Input all numbers or enter letter to end:\n";
+	cout << "Trying to find median.\n Input all numbers or enter not a number or EOF to end:\n";
 
-	vec<int> numbers;
+	heap_median<int> m;
 	int n;
 	while (cin >> n)
 	{
-		numbers.push_back(n);
-	}
-
-	cout << "\nMedian for this set: ";
-
-	for (auto it : numbers)
-	{
-		cout << it << ", ";
+		m.push(n);
+		cout << "\nCurrent median value: " << m.median() << std::endl;
 	}
 
 	return 0;
