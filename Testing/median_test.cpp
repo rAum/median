@@ -112,28 +112,22 @@ struct MedianTesting : public ::testing::TestWithParam<size_t>
 
 };
 
-//TEST_P(MedianTesting, SortedInput)
-//{
-//	const size_t test_size = GetParam();
-//	MedianTest::perform_test(test_size, MedianTest::sorted_input, median<int>::of_sorted_set);
-//}
-//
-//TEST_P(MedianTesting, DescSortedInput)
-//{
-//	const size_t test_size = GetParam();
-//	MedianTest::perform_test(test_size, MedianTest::desc_sorted_input, median<int>::of_sorted_set);
-//}
-
-/*TEST_P(MedianTesting, RandomInput)
-{
-	const size_t test_size = GetParam();
-	MedianTest::perform_test(test_size, MedianTest::random_input, median<int>::of_sorted_set);
-}*/
-
 TEST_P(MedianTesting, TestHeapMediana)
 {
 	const size_t test_size = GetParam();
 	MedianTest::perform_online_test(test_size, MedianTest::random_input, heap_median<int>());
+}
+
+TEST_P(MedianTesting, TestSortMediana)
+{
+	const size_t test_size = GetParam();
+	MedianTest::perform_online_test(test_size, MedianTest::random_input, sort_based_median<int>());
+}
+
+TEST_P(MedianTesting, TestQuickSelectMediana)
+{
+	const size_t test_size = GetParam();
+	MedianTest::perform_online_test(test_size, MedianTest::random_input, qselect_median<int>());
 }
 
 const size_t sizes[] = { 0, 1, 2, 3, 4, 10, 13 };

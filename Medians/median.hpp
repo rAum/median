@@ -2,19 +2,19 @@
 
 #include "vec.hpp"
 #include "heap.hpp"
+#include "sorted_vec.hpp"
 #include "algorithm.hpp"
-#include <vector>
 
 
-/// Online median finding algorithm, based on two binary heaps.
-/// Running time:
-/// push - O (lg n)
-/// median - O (1)
-/// Total time for n values - O (n * lg n)
-/// Because we sometimes need to call delete-min operation to maintain balance, 
-/// we cannot beat worst-case cost of lg n unless we can have constrains on input set (like only values 0..255)
-/// as insert, find_min, delete_min are bounded by lg n (contradiction of lower bound of comparison sorting)
-/// Using other fancier heap like Fibbonacimay provide theoretical improvement, for some inputs.
+// Online median finding algorithm, based on two binary heaps.
+// Running time:
+// push - O (lg n)
+// median - O (1)
+// Total time for n values - O (n * lg n)
+// Because we sometimes need to call delete-min operation to maintain balance, 
+// we cannot beat worst-case cost of lg n unless we can have constrains on input set (like only values 0..255)
+// as insert, find_min, delete_min are bounded by lg n (contradiction of lower bound of comparison sorting)
+// Using other fancier heap like Fibbonaci may provide theoretical improvement, for some inputs.
 template<class T>
 class heap_median
 {
@@ -113,44 +113,80 @@ private:
 	double     median_;
 };
 
-/// some algorithms to find median
-template<class T>
-struct median
-{
-	using Input = vec<T>&;
+////////////////////////////////////////////////////////////
 
-	static double of_sorted_set(const Input input)
+// Simple algorithm that works by having sorted set.
+// For simplicity, it's based on vector with insert sort implemented.
+// This makes it O(n^2) for n input.
+// Changing sorted_vec to BST (AVL, Red-Black etc) could improve time
+// as we could insert data in lg n instead of n.
+template<class T>
+struct sort_based_median
+{
+public:
+	// O (n)
+	void push(const T& value)
 	{
-		auto size = input.size();
-		std::vector<int> tmp(input.begin(), input.end());
+		sortedInput_.push_back(value);
+	}
+
+	// O (1)
+	double median() const
+	{
+		auto size = sortedInput_.size();
+
 		if (size == 0) return std::numeric_limits<double>::quiet_NaN();
+		const auto half = size / 2;
 		if (algorithm::is_odd(size))
 		{
-			return input[size / 2];
+			return sortedInput_[half];
 		}
 		else
 		{
-			const auto half = size / 2;
-			return 0.5 * (input[half] + input[half - 1]);
+			return 0.5 * (sortedInput_[half] + sortedInput_[half - 1]);
 		}
 	}
+private:
+	sorted_vec<T> sortedInput_;
+};  // struct sort_based_median
 
 
+// This is median finder that does not sort input data,
+// it's using quick select algorithm instead.
+// This makes finding median in O(n) average time but sometimes 
+// it may fall to run in O(n^2).
+template<class T>
+struct qselect_median
+{
+public:
 
-	//template<class SortStrategy<class Inplace>>
-	//static T sort_then_return(Input input)
-	//{
-	//	SortStrategy sort;
-	//	sort(input);
-	//	return of_sorted_set(input);
-	//}
+	// Amortized O(1)
+	void push(const T& value)
+	{
+		input_.push_back(value);
+	}
 
-	//template<class SortStrategy>
-	//static T sort_then_return(Input input)
-	//{
-	//	SortStrategy sort;
-	//	return of_sorted_set(sort(input));
-	//}
+	// Average: O(n), worst case: O(n^2).
+	double median()
+	{
+		auto size = input_.size();
 
-
-};  // namespace median
+		if (size == 0) return std::numeric_limits<double>::quiet_NaN();
+		if (size == 1) return input_[0];
+		
+		const auto half = size / 2;
+		if (algorithm::is_odd(size))
+		{
+			algorithm::quick_select_kth(input_.begin(), input_.end(), half);
+			return input_[half];
+		}
+		else
+		{
+			algorithm::quick_select_kth(input_.begin(), input_.end(), half);
+			algorithm::quick_select_kth(input_.begin(), input_.end(), half - 1);
+			return 0.5 * (input_[half] + input_[half - 1]);
+		}
+	}
+private:
+	vec<T> input_;
+};

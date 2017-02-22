@@ -155,6 +155,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Medians\algorithm.cpp" />
     <ClCompile Include="algorithm_test.cpp" />
     <ClCompile Include="heap_test.cpp" />
     <ClCompile Include="main.cpp" />

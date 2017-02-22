@@ -2,12 +2,13 @@
 
 #include <memory>
 
-/// Very minimal implementation of a vector 
+// Very minimal implementation of a vector.
+// Amortized O(1) time
 template<class T>
 class vec
 {
 	static constexpr size_t DefaultCapacity = 128;
-	static constexpr double GrowthRatio = 1.8;
+	static constexpr double GrowthRatio = 1.6; // using less than 2 is helping to reuse memory blocks
 public:
 	vec()
 		: capacity_(DefaultCapacity), size_(0), buff_(std::make_unique<T[]>(DefaultCapacity))
@@ -24,6 +25,7 @@ public:
 
 	~vec() = default;
 
+	// Amortized O(1), because of need to increase capacity
 	void push_back(const T& value)
 	{
 		const auto new_size = size_ + 1;
@@ -35,6 +37,7 @@ public:
 		size_ = new_size;
 	}
 
+	// O(1), probably will grow again
 	void pop_back()
 	{
 		--size_;
